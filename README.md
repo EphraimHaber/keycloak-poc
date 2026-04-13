@@ -43,22 +43,53 @@ npm run dev
 
 Runs on http://localhost:5173.
 
+## Pages
+
+### `/` — Home
+
+Public landing page. Shows current auth status and links to other pages.
+
+### `/dashboard` — Dashboard (protected)
+
+Requires authentication. If you're not logged in, visiting this page automatically redirects you to the Keycloak login screen. Once authenticated, it displays your user profile (username, email, subject) and calls protected backend endpoints.
+
+### `/playground` — API Playground
+
+Public page for interactively testing all backend endpoints at different authorization levels. Features:
+
+- **Auth status display** — shows your current username and assigned roles
+- **Token toggle** — checkbox to send or withhold the auth token, so you can see how endpoints respond to unauthenticated requests
+- **Per-endpoint test buttons** plus a "Test All" button
+- **Response viewer** — shows HTTP status codes and JSON responses for each call
+- **Test user reference table** — built-in credentials you can use to log in with different roles
+
+#### Backend endpoints tested in the Playground
+
+| Endpoint | Access level | Description |
+|----------|-------------|-------------|
+| `health` | Public | No auth required |
+| `me` | Authenticated | Any logged-in user |
+| `viewerData` | Role: viewer, manager, or admin | Viewer-level content |
+| `managerData` | Role: manager or admin | Manager-level content |
+| `adminData` | Role: admin only | Admin-level content |
+
+## Test users
+
+| Username  | Password  | Email                  | Roles                    |
+|-----------|-----------|------------------------|--------------------------|
+| `admin`   | `admin`   | `admin@example.com`    | admin, manager, viewer   |
+| `manager` | `manager` | `manager@example.com`  | manager, viewer          |
+| `viewer`  | `viewer`  | `viewer@example.com`   | viewer                   |
+
 ## Usage
 
 1. Open http://localhost:5173
 2. Click **Login** (or navigate to Dashboard)
 3. You'll be redirected to the Keycloak login page
-4. Log in with `testuser` / `testpass`
+4. Log in with any test user above (e.g. `admin` / `admin`)
 5. You'll be redirected back to the app, now authenticated
-6. The Dashboard page calls protected tRPC endpoints that validate your JWT on the backend
-
-## Test user
-
-| Field    | Value                |
-|----------|----------------------|
-| Username | `testuser`           |
-| Password | `testpass`           |
-| Email    | `testuser@example.com` |
+6. Visit the **Playground** to test endpoints with different roles — log out and back in as a different user to see how access changes
+7. The **Dashboard** page calls protected tRPC endpoints that validate your JWT on the backend
 
 ## Architecture
 
